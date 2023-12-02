@@ -2,7 +2,7 @@
  * Advent of Code
  * Deepak Shenoy
  *
- * Day 02 - Part 1
+ * Day 02 - Part 1 and Part 2
  * December 2nd, 2023
  *
  */
