@@ -1,0 +1,129 @@
+/*
+ * Advent of Code
+ * Deepak Shenoy
+ *
+ * Day 01 - Part 2
+ * December 1st, 2023
+ *
+ */
+
+#include <iostream>
+#include <fstream>
+
+// Number Token
+struct Number {
+    int numericalValue;
+    std::string stringValue;
+    Number(int numericalValue, std::string stringValue) {
+        this->numericalValue = numericalValue;
+        this->stringValue = stringValue;
+    }
+};
+
+// Tree Node
+class TreeNode {
+public:
+    TreeNode* left;
+    TreeNode* right;
+    Number *value;
+    TreeNode(Number *value) {
+        this->value = value;
+    }
+};
+
+// Can use vector but went the hard way...
+TreeNode *createBalancedTree(Number numberArray[], int start, int end) {
+    if(start>end) return NULL;
+    int middleIndex = (start + end)/2;
+    TreeNode *root = new TreeNode(&numberArray[middleIndex]);
+    root->left = createBalancedTree(numberArray, start, middleIndex - 1);
+    root->right = createBalancedTree(numberArray, middleIndex + 1, end);
+    return root;
+}
+
+TreeNode* searchBalancedTree(TreeNode* root, std::string keyValue) {
+    if(root == nullptr || root->value->stringValue == keyValue) {
+        return root;
+    }
+    if(root->value->stringValue < keyValue) return searchBalancedTree(root->right, keyValue);
+    if(root->value->stringValue > keyValue) return searchBalancedTree(root->left, keyValue);
+}
+
+int main(int argc, char** argv) {
+
+    // Check parameters before processing
+    if(argc != 2) {
+        std::cout << "Please enter the file input file name.  Usage " << argv[2] << " <input filename> " << std::endl;
+        return 0;
+    }
+
+    // Define our nodes
+    Number zero = Number(0, "zero");  // 9
+    Number one = Number(1, "one");  // 4
+    Number two = Number(2, "two");  // 8
+    Number three = Number(3, "three");  // 7
+    Number four = Number(4, "four");  // 2
+    Number five = Number(5, "five");  // 1
+    Number six = Number(6, "six");     // 6
+    Number seven = Number(7, "seven");  //5
+    Number eight = Number(8, "eight"); // 0
+    Number nine = Number(9, "nine");   // 3
+
+    // Create ordered list of nodes by string characters ... come back to this and do programmatically (simple for 10 words)
+    Number numbers[10] = {eight, five, four, nine, one, seven, six, three, two , zero};
+
+    // Create an index of the search items i.e. the numbers
+    TreeNode *rootTreeIndex = createBalancedTree(numbers, 0, 9);
+
+    std::ifstream inputFile;
+    std::string rawCalibrationValue;
+
+
+
+    inputFile.open(argv[1]);
+    int total = 0;
+    while(std::getline(inputFile, rawCalibrationValue)) {
+        std::string numericalText = "";
+        bool firstDigitFound = false, lastDigitFound = false;
+        std::string firstDigit="", lastDigit="";
+        //if(rawCalibrationValue.length()>1) {
+            for (int i = 0; i < rawCalibrationValue.length(); i ++) {
+                for(int j = rawCalibrationValue.length(); j >= i; j--) {
+                    std::string potentialToken = rawCalibrationValue.substr(i, j-i);
+                    if(std::isdigit(potentialToken[0])) {
+                        numericalText += potentialToken[0];
+                        i++;
+                        j = rawCalibrationValue.length() + 1;
+                        if(!firstDigitFound) {
+                            firstDigit=potentialToken[0];
+                            firstDigitFound = true;
+                        } else {
+                            lastDigit=potentialToken[0];
+                            lastDigitFound = true;
+                        }
+                    }
+                    TreeNode *result = searchBalancedTree(rootTreeIndex, potentialToken);
+                    if (result != NULL) {
+                        i = j;
+                        j = rawCalibrationValue.length() + 1;
+                        if(!firstDigitFound) {
+                            firstDigit=std::to_string(result->value->numericalValue);
+                            firstDigitFound = true;
+                        } else {
+                            lastDigit=std::to_string(result->value->numericalValue);
+                            lastDigitFound = true;
+                        }
+                    }
+                    //std::cout<< std::endl;
+                }
+            }
+        //}
+        int result = 0;
+        if(firstDigitFound && !lastDigitFound) result = std::stoi(firstDigit + firstDigit);
+                else if (firstDigitFound && lastDigitFound) result = std::stoi(firstDigit + lastDigit);
+                total += result;
+        std::cout<<rawCalibrationValue<< " "<< firstDigit + lastDigit <<" "<<firstDigit<<" "<<lastDigit<<"   "<<result<<std::endl;
+    }
+    std::cout << total << std::endl;
+    return 0;
+}

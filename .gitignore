@@ -1,0 +1,10 @@
+#
+# Deepak Shenoy
+#
+# November 2023
+#
+.idea
+*/target/*
+.DS_Store
+*/cmake-build-debug/*
+*/workspace.xml
