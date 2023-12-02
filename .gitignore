@@ -6,5 +6,7 @@
 .idea
 */target/*
 .DS_Store
-*/cmake-build-debug/*
+aoc-01-part-01/cmake-build-debug/
+aoc-01-part-02/cmake-build-debug/
+aoc-02/cmake-build-debug/
 */workspace.xml
