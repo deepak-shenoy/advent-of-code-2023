@@ -9,6 +9,16 @@
 
 #include <iostream>
 
+void raceTimes(int totalSeconds) {
+
+    printf("===============================================\n");
+    for(int i = 0; i < totalSeconds; i++) {
+        printf("Run %i: speed=%i, run-time=%i, distance=%i\n",
+               i, i, (totalSeconds - i), (totalSeconds - i) * i);
+    }
+    printf("===============================================\n\n");
+}
+
 int main() {
     // Time allowed for each race
     // Best distance recorded for each race
@@ -27,9 +37,15 @@ int main() {
     // hold 7s Speed of 0 ms/s for time of  0ms distance of   0 mm
     // Formula = (total_seconds - hold_time) * hold_time
 
+    raceTimes(7);
+
+
+
     // Third race
     // total_seconds = 19
     // Max hold times between 11 - 18 (9 inclusive combinations)
+
+    raceTimes(30);
 
     return 0;
 }
